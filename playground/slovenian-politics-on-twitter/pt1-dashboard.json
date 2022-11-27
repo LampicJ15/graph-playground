@@ -1,0 +1,231 @@
+{
+  "title": "Slovenian politics on Twitter",
+  "version": "2.2",
+  "settings": {
+    "pagenumber": 0,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {
+      "neodash_twitter_1": "lukamesec",
+      "neodash_twitter_2": "jjansasdsampic13aampic13",
+      "neodash_twitteraccount_username_1": "andrejbauer",
+      "neodash_twitteraccount_username_2": "instagram"
+    }
+  },
+  "pages": [
+    {
+      "title": "Slovenian Parliament on Twitter ",
+      "reports": [
+        {
+          "title": "Number of active Twitter accounts per party",
+          "query": "MATCH (pole)<-[:PART_OF]-(party:Party)<-[:MEMBER_OF]-(person:Person)\nOPTIONAL MATCH (person)-[:HAS_ACCOUNT]->(twitter:TwitterAccount)\nRETURN  head(labels(pole)) AS pole,\n        party.name AS party,\n        count(person) AS numberOfPeople,\n        count(twitter) AS activeOnTwitter\n  ORDER BY activeOnTwitter DESC;\n",
+          "width": 7,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Coalition size",
+          "query": "// number of people in the coalition\nMATCH (:Coalition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(person:Person)\nRETURN count(person) AS coalitionSize;\n",
+          "width": 2,
+          "height": 1,
+          "x": 0,
+          "y": 2,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Coalition on Twitter",
+          "query": "MATCH (:Coalition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(:Person)-[:HAS_ACCOUNT]->(twitter:TwitterAccount)\nRETURN count(twitter) AS onTwitter;\n\n\n",
+          "width": 2,
+          "height": 1,
+          "x": 2,
+          "y": 2,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Coalition Twitter percentage",
+          "query": "MATCH (:Coalition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(person:Person)\nOPTIONAL MATCH (person)-[:HAS_ACCOUNT]->(twitter:TwitterAccount)\nWITH count(person) AS coalitionSize, count(twitter) AS onTwitter\nRETURN toString(round(toFloat(onTwitter) / coalitionSize * 100, 2)) + \"%\";",
+          "width": 3,
+          "height": 1,
+          "x": 4,
+          "y": 4,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Opposition Twitter Percentage",
+          "query": "MATCH (:Opposition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(person:Person)\nOPTIONAL MATCH (person)-[:HAS_ACCOUNT]->(twitter:TwitterAccount)\nWITH count(person) AS coalitionSize, count(twitter) AS onTwitter\nRETURN toString(round(toFloat(onTwitter) / coalitionSize * 100, 2)) + \"%\";",
+          "width": 3,
+          "height": 1,
+          "x": 4,
+          "y": 5,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Opposition size",
+          "query": "MATCH (:Opposition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(person:Person)\nRETURN count(person) AS oppositionSize;\n\n\n",
+          "width": 2,
+          "height": 1,
+          "x": 0,
+          "y": 3,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Opposition on Twitter",
+          "query": "MATCH (:Opposition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(:Person)-[:HAS_ACCOUNT]->(twitter:TwitterAccount)\nRETURN count(twitter) AS onTwitter\n\n\n",
+          "width": 2,
+          "height": 1,
+          "x": 2,
+          "y": 3,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Coalition reach",
+          "query": "MATCH (:Coalition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(:Person)-[:HAS_ACCOUNT]->(:TwitterAccount)<-[:FOLLOWS]-(follower:TwitterAccount)\nRETURN count(distinct follower) AS reach;\n\n\n",
+          "width": 3,
+          "height": 1,
+          "x": 7,
+          "y": 2,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Opposition reach",
+          "query": "MATCH (:Opposition)<-[:PART_OF]-(:Party)<-[:MEMBER_OF]-(:Person)-[:HAS_ACCOUNT]->(:TwitterAccount)<-[:FOLLOWS]-(follower:TwitterAccount)\nRETURN count(distinct follower) AS reach;\n",
+          "width": 3,
+          "height": 1,
+          "x": 7,
+          "y": 3,
+          "type": "value",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Twitter reach per party",
+          "query": "MATCH (party:Party)<-[:MEMBER_OF]-(:Person)-[:HAS_ACCOUNT]->(:TwitterAccount)<-[:FOLLOWS]-(follower:TwitterAccount)\nRETURN party.name AS party, count(distinct follower) AS reach ORDER BY reach DESC;\n\n",
+          "width": 5,
+          "height": 3,
+          "x": 0,
+          "y": 6,
+          "type": "bar",
+          "selection": {
+            "index": "party",
+            "value": "reach",
+            "key": "(none)"
+          },
+          "settings": {
+            "nodePositions": {},
+            "colors": "category10",
+            "showOptionalSelections": false
+          }
+        },
+        {
+          "title": "Shortest path",
+          "query": "MATCH (t1:TwitterAccount {username: $neodash_twitteraccount_username_1})\nMATCH (t2:TwitterAccount {username: $neodash_twitteraccount_username_2})\nMATCH p = shortestPath((t1)-[:FOLLOWS*]-(t2))\nRETURN p;\n\n\n",
+          "width": 7,
+          "height": 2,
+          "x": 3,
+          "y": 9,
+          "type": "graph",
+          "selection": {
+            "TwitterAccount": "name"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Twitter Account #1",
+          "query": "MATCH (n:`TwitterAccount`) \nWHERE toLower(toString(n.`username`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`username` as value ORDER BY size(toString(value)) ASC LIMIT 5",
+          "width": 3,
+          "height": 1,
+          "x": 0,
+          "y": 9,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Node Property",
+            "entityType": "TwitterAccount",
+            "propertyType": "username",
+            "parameterName": "neodash_twitteraccount_username_1",
+            "id": "1"
+          }
+        },
+        {
+          "title": "Twitter Account #2",
+          "query": "MATCH (n:`TwitterAccount`) \nWHERE toLower(toString(n.`username`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`username` as value ORDER BY size(toString(value)) ASC LIMIT 5",
+          "width": 3,
+          "height": 1,
+          "x": 0,
+          "y": 10,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Node Property",
+            "entityType": "TwitterAccount",
+            "propertyType": "username",
+            "parameterName": "neodash_twitteraccount_username_2",
+            "id": "2"
+          }
+        },
+        {
+          "title": "Total reach",
+          "query": "MATCH (:Person)-[:HAS_ACCOUNT]->(:TwitterAccount)<-[:FOLLOWS]-(follower:TwitterAccount)\nRETURN count(distinct follower);\n\n\n",
+          "width": 3,
+          "height": 2,
+          "x": 7,
+          "y": 0,
+          "type": "value",
+          "selection": {},
+          "settings": {}
+        },
+        {
+          "title": "",
+          "query": "\n\n\n",
+          "width": 3,
+          "height": 2,
+          "x": 7,
+          "y": 4,
+          "type": "table",
+          "selection": {},
+          "settings": {}
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {}
+}
