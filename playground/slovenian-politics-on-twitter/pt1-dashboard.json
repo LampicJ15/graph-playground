@@ -61,7 +61,7 @@
           "width": 3,
           "height": 1,
           "x": 4,
-          "y": 4,
+          "y": 2,
           "type": "value",
           "selection": {},
           "settings": {
@@ -74,7 +74,7 @@
           "width": 3,
           "height": 1,
           "x": 4,
-          "y": 5,
+          "y": 3,
           "type": "value",
           "selection": {},
           "settings": {
@@ -136,10 +136,10 @@
         {
           "title": "Twitter reach per party",
           "query": "MATCH (party:Party)<-[:MEMBER_OF]-(:Person)-[:HAS_ACCOUNT]->(:TwitterAccount)<-[:FOLLOWS]-(follower:TwitterAccount)\nRETURN party.name AS party, count(distinct follower) AS reach ORDER BY reach DESC;\n\n",
-          "width": 5,
+          "width": 10,
           "height": 3,
           "x": 0,
-          "y": 6,
+          "y": 4,
           "type": "bar",
           "selection": {
             "index": "party",
@@ -149,7 +149,7 @@
           "settings": {
             "nodePositions": {},
             "colors": "category10",
-            "showOptionalSelections": false
+            "showOptionalSelections": true
           }
         },
         {
@@ -158,7 +158,7 @@
           "width": 7,
           "height": 2,
           "x": 3,
-          "y": 9,
+          "y": 7,
           "type": "graph",
           "selection": {
             "TwitterAccount": "name"
@@ -173,7 +173,7 @@
           "width": 3,
           "height": 1,
           "x": 0,
-          "y": 9,
+          "y": 7,
           "type": "select",
           "selection": {},
           "settings": {
@@ -190,7 +190,7 @@
           "width": 3,
           "height": 1,
           "x": 0,
-          "y": 10,
+          "y": 8,
           "type": "select",
           "selection": {},
           "settings": {
@@ -209,17 +209,6 @@
           "x": 7,
           "y": 0,
           "type": "value",
-          "selection": {},
-          "settings": {}
-        },
-        {
-          "title": "",
-          "query": "\n\n\n",
-          "width": 3,
-          "height": 2,
-          "x": 7,
-          "y": 4,
-          "type": "table",
           "selection": {},
           "settings": {}
         }
